@@ -1,28 +1,52 @@
+<style>
+</style>
+
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <v-app>
+        <Navigation :user="currentUser"/>
+
+        <v-container id="masterContainer" center>
+            <v-row center>
+                <v-spacer></v-spacer>
+                <v-col cols="12" sm="8">
+                    <component :is="PageContent" :user="currentUser"></component>
+                </v-col>
+                <v-spacer></v-spacer>
+            </v-row>
+        </v-container>
+    </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+    import Login from './components/pages/Login';
+    import Navigation from './components/controls/Navigation';
+    import PageNotFound from './components/pages/PageNotFound';
+    import Posts from './components/pages/Posts';
+    import Register from './components/pages/Register';
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+    export default {
+        name: 'App',
+
+        components: {
+            Navigation,
+        },
+
+        data: () => ({
+            currentRoute: window.location.pathname,
+            routes: {
+                '/': Posts,
+                '/register': Register,
+                '/login': Login,
+            },
+
+            currentUser: null,
+            // currentUser: { username: 'tobias', signedIn: new Date().toLocaleString() },
+        }),
+
+        computed: {
+            PageContent() {
+                return this.routes[this.currentRoute] || PageNotFound;
+            }
+        },
+    };
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
