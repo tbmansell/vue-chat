@@ -5,6 +5,8 @@ import vuetify from './plugins/vuetify'
 import Store from './services/Store'
 import Config from './services/Config'
 
+const eventBus = new Vue();
+
 Vue.config.productionTip = true
 
 // Bind the following to every Vue instance
@@ -13,6 +15,7 @@ Vue.prototype.$store = Store
 Vue.prototype.$load = Store.get
 Vue.prototype.$save = Store.set
 Vue.prototype.$config = Config
+Vue.prototype.$bus = eventBus;
 
 new Vue({
   vuetify,

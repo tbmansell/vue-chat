@@ -2,7 +2,7 @@
 </style>
 
 <template>
-    <v-app id="app" @loggedin="LoggedIn">
+    <v-app id="app" @loggedin="loggedIn">
         <Navigation :user="currentUser"/>
 
         <v-container id="masterContainer">
@@ -37,7 +37,7 @@
                 '/register': Register,
                 '/login': Login,
             },
-
+            // Persisted:
             currentUser: null,
         }),
 
@@ -49,11 +49,17 @@
 
         methods: {
             init() {
+                const token = this.$load('authToken');
+                if (token) {
+                    this.$http.defaults.headers.common['X-Auth'] = token;
+                }
                 this.currentUser = this.$load('currentUser');
             },
 
-            LoggedIn(user) {
+            loggedIn(authToken, user) {
+                this.$http.defaults.headers.common['X-Auth'] = authToken;
                 this.currentUser = user;
+                this.$save('authToken', authToken);
                 this.$save('currentUser', user);
             },
         },

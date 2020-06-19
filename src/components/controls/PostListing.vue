@@ -11,7 +11,7 @@
 </style>
 
 <template>
-    <v-container>
+    <v-container @newpost="newPost">
         <div v-if="status" class="status">{{ status }}</div>
         <v-container>
             <v-row v-for="post in posts" :key="post.id">
@@ -19,7 +19,7 @@
                     <strong>@{{ post.username }}</strong>
                     <span>{{ post.body }}</span>
                     <div>
-                        <sub>{{ post.date.toGMTString() }}</sub>
+                        <sub>{{ post.date ? post.date.toLocaleString() : '' }}</sub>
                     </div>
                 </v-col>
             </v-row>
@@ -54,7 +54,16 @@
                     date: new Date(post.date),
                 }));
                 this.status = '';
+            },
+
+            newPost(post) {
+                console.log("New post added: ", post)
+                this.posts.unshift(post);
             }
+        },
+
+        created() {
+            this.$bus.$on('newpost', post => this.newPost(post));
         },
 
         mounted: async function() {

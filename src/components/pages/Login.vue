@@ -57,8 +57,7 @@ s<template>
 
                     if ([200, 201, 202].includes(response.status)) {
                         this.loginError = '';
-                        this.$http.defaults.headers.common['X-Auth'] = response.data;
-                        this.$parent.$emit('loggedin', {
+                        this.$parent.$emit('loggedin', response.data, {
                             username: this.username,
                             signedIn: new Date().toLocaleString(),
                         });
