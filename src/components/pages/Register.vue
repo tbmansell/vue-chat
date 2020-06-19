@@ -5,18 +5,28 @@
             <v-container center>
                 <v-row>
                     <v-col cols="12" sm="12">
-                        <v-text-field v-model="username" label="Username" outlined shaped filled></v-text-field>
+                        <v-text-field v-model="username"
+                                      @keyup.enter="register"
+                                      label="Username"
+                                      outlined shaped filled></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col cols="12" sm="12">
-                        <v-text-field v-model="password" label="Password" outlined shaped filled></v-text-field>
+                        <v-text-field type="password"
+                                      v-model="password"
+                                      @keyup.enter="register"
+                                      label="Password"
+                                      outlined shaped filled></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col cols="12" sm="12">
-                        <v-btn color="green" @click.native="register" :disabled="!submitAllowed">Register</v-btn>
+                        <v-btn color="green" @click="register" :disabled="!submitAllowed">Register</v-btn>
                     </v-col>
+                </v-row>
+                <v-row>
+                    <v-col color="red">{{ registerError }}</v-col>
                 </v-row>
             </v-container>
         </v-form>
@@ -30,6 +40,7 @@
         data: () => ({
             username: '',
             password: '',
+            registerError: '',
         }),
 
         computed: {
@@ -39,8 +50,29 @@
         },
 
         methods: {
-            register: function(event) {
-                console.log('register: ', event);
+            register: async function() {
+                try {
+                    const user = { username: this.username, password: this.password };
+                    const url = this.$config.userServiceDomain + '/api/users';
+                    const response = await this.$http.post(url, user, {
+                        // Dont throw error on these codes (400 so we can read error message)
+                        validateStatus: status => [200, 201, 202, 400].includes(status)
+                    });
+
+                    if ([200, 201, 202].includes(response.status)) {
+                        this.registerError = '';
+                        this.$http.defaults.headers.common['X-Auth'] = response.data;
+                        this.$parent.$emit('loggedin', {
+                            username: this.username,
+                            signedIn: new Date().toLocaleString(),
+                        });
+                        window.location = '/';
+                    } else {
+                        this.registerError = `Error: ${response.status}: ${response.data}`;
+                    }
+                } catch (err) {
+                    this.registerError = err;
+                }
             },
         }
     };

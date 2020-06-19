@@ -15,7 +15,6 @@
     <v-card color="grey lighten-4" height="100px" tile>
         <v-toolbar src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg">
             <v-app-bar-nav-icon></v-app-bar-nav-icon>
-            <v-spacer></v-spacer>
 
             <template v-if="user">
                 <span class="signedIn">
@@ -24,8 +23,9 @@
                     <br>
                     <sup class="date">{{ user.signedIn }}</sup>
                 </span>
-                <v-spacer></v-spacer>
             </template>
+
+            <v-spacer></v-spacer>
 
             <template v-for="item in menu">
                 <v-btn v-if="item.show()" :href="item.href" :key="item.label" class="menuitem">
@@ -34,14 +34,15 @@
             </template>
 
             <v-spacer></v-spacer>
+
             <v-btn icon>
                 <v-icon>mdi-magnify</v-icon>
             </v-btn>
-            <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
+            <v-btn v-if="user" icon>
+                <v-icon>mdi-account</v-icon>
             </v-btn>
-            <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
+            <v-btn v-if="user" @click="logout" text small color="white">
+                logout
             </v-btn>
         </v-toolbar>
     </v-card>
@@ -53,6 +54,13 @@
 
         props: {
             'user': Object,
+        },
+
+        methods: {
+            logout() {
+                this.$store.clear();
+                window.location = '/';
+            }
         },
 
         computed: {
@@ -76,6 +84,7 @@
                         href: '/login',
                         show: () => !this.signedIn
                     },
+                    /***
                     {
                         label: 'Account',
                         href: '/account',
@@ -86,6 +95,7 @@
                         href: '/finder',
                         show: () => this.signedIn
                     },
+                    ***/
                 ];
             }
         },

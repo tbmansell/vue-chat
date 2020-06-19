@@ -39,7 +39,8 @@
         methods: {
             async loadPosts() {
                 this.status = 'Loading posts...';
-                const response = await this.$http.get('http://localhost:3000/api/posts');
+                const url = this.$config.postServiceDomain + '/api/posts';
+                const response = await this.$http.get(url);
 
                 if (response.status !== 200) {
                     this.status = `HTTP Response ${response.status}: ${response.statusText}`;

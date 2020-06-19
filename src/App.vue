@@ -2,10 +2,10 @@
 </style>
 
 <template>
-    <v-app>
+    <v-app id="app" @loggedin="LoggedIn">
         <Navigation :user="currentUser"/>
 
-        <v-container id="masterContainer" center>
+        <v-container id="masterContainer">
             <v-row center>
                 <v-spacer></v-spacer>
                 <v-col cols="12" sm="8">
@@ -24,9 +24,8 @@
     import Posts from './components/pages/Posts';
     import Register from './components/pages/Register';
 
-    export default {
+    export default  {
         name: 'App',
-
         components: {
             Navigation,
         },
@@ -40,7 +39,6 @@
             },
 
             currentUser: null,
-            // currentUser: { username: 'tobias', signedIn: new Date().toLocaleString() },
         }),
 
         computed: {
@@ -48,5 +46,21 @@
                 return this.routes[this.currentRoute] || PageNotFound;
             }
         },
+
+        methods: {
+            init() {
+                this.currentUser = this.$load('currentUser');
+            },
+
+            LoggedIn(user) {
+                this.currentUser = user;
+                this.$save('currentUser', user);
+            },
+        },
+
+        mounted: function() {
+            // Need to call another method, or components dont update if done in here
+            this.init();
+        }
     };
 </script>
