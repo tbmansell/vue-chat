@@ -54,6 +54,15 @@
                     this.$http.defaults.headers.common['X-Auth'] = token;
                 }
                 this.currentUser = this.$load('currentUser');
+
+                const wss = new WebSocket(this.$config.postWssDomain);
+                wss.onopen = () => {
+                    console.log(`Websocket connected`);
+                }
+                wss.onmessage = event => {
+                    const payload = JSON.parse(event.data);
+                    this.$bus.$emit('ws:'+payload.topic, payload.data);
+                }
             },
 
             loggedIn(authToken, user) {

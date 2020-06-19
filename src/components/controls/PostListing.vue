@@ -57,13 +57,16 @@
             },
 
             newPost(post) {
-                console.log("New post added: ", post)
                 this.posts.unshift(post);
             }
         },
 
         created() {
-            this.$bus.$on('newpost', post => this.newPost(post));
+            this.$bus.$on('ws:new_post', post => {
+                // Convert string to date
+                post.date = new Date(post.date);
+                this.newPost(post);
+            });
         },
 
         mounted: async function() {

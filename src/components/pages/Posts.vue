@@ -88,7 +88,6 @@
               if ([200, 201, 202].includes(response.status)) {
                   this.postError = '';
                   this.message = '';
-                  this.$bus.$emit('newpost', response.data);
               } else {
                   this.postError = `Error: ${response.status}: ${response.data}`;
               }
