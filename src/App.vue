@@ -1,6 +1,3 @@
-<style>
-</style>
-
 <template>
     <v-app id="app" @loggedin="loggedIn">
         <Navigation :user="currentUser"/>
